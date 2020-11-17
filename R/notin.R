@@ -6,11 +6,9 @@
 #' @param y Object 2.
 #' @return Returns the result of !%in%(x,y)
 #' @examples
-#' \dontrun{
 #' tmp1 <- c("a","b","c")
 #' tmp2 <- c("b", "c", "d")
 #' tmp1 %notin% tmp2
-#' }
 #' @export
 # define %notin% function
 # nolint start

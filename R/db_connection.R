@@ -18,7 +18,7 @@
 #' @param db_name A character. Name of the database system.
 #' @param db_type A character. Type of the database system. Currently
 #'   implemented systems are: 'postgres', 'oracle'.
-#' @param lib_path A character string. The path to the ojdbc7.jar file.
+#' @param lib_path A character string. The path to the ojdbc*.jar file.
 #'
 #' @inheritParams feedback
 #' @return If successful, the result will be the established connection.
@@ -28,9 +28,13 @@
 #' db_con <- DIZutils::db_connection(
 #'   db_name = "i2b2",
 #'   db_type = "postgres",
-#'   headless = true,
-#'   logfile_dir = "./path/to/logfile/dir/"
+#'   headless = TRUE,
+#'   logfile_dir = tempdir()
 #' )}
+#'
+#' @seealso{
+#' \code{\link[DBI]{dbConnect}}, \code{\link[RPostgres]{RPostgres}}
+#' }
 #'
 #' @export
 #'
@@ -43,94 +47,117 @@ db_connection <- function(db_name,
                           timeout = 30,
                           logfile_dir = NULL,
                           lib_path = NULL) {
-  stopifnot(
-    is.character(db_name),
-    is.character(db_type),
-    is.logical(headless),
-    is.logical(from_env),
-    ifelse(is.null(settings), TRUE, is.list(settings)),
-    is.numeric(timeout),
-    ifelse(is.null(logfile_dir), TRUE, is.character(logfile_dir)),
-    ifelse(is.null(lib_path), TRUE, is.character(lib_path))
-  )
+  db_con <- NULL
+  tryCatch({
+    stopifnot(is.character(db_name),
+        is.character(db_type),
+        is.logical(headless),
+        is.logical(from_env),
+        ifelse(is.null(settings), TRUE, is.list(settings)),
+        is.numeric(timeout),
+        ifelse(is.null(logfile_dir), TRUE, is.character(logfile_dir)),
+        ifelse(is.null(lib_path), TRUE, is.character(lib_path)))
 
-  db_type <- toupper(db_type)
-  db_name <- toupper(db_name)
-
-  if (isTRUE(from_env)) {
-    dbname <- Sys.getenv(paste0(db_name, "_DBNAME"))
-    host <- Sys.getenv(paste0(db_name, "_HOST"))
-    port <- Sys.getenv(paste0(db_name, "_PORT"))
-    user <- Sys.getenv(paste0(db_name, "_USER"))
-    password <- Sys.getenv(paste0(db_name, "_PASSWORD"))
-
-  } else if (isFALSE(from_env)) {
-    stopifnot(is.list(settings))
-
-    host <- settings$host
-    port <- settings$port
-    user <- settings$user
-    password <- settings$password
-  }
-
-  if (db_type == "ORACLE") {
-    ## create driver
-    drv <- RJDBC::JDBC("oracle.jdbc.OracleDriver",
-                       classPath = paste0(lib_path, "/ojdbc7.jar"))
+      db_type <- toupper(db_type)
+    db_name <- toupper(db_name)
 
     if (isTRUE(from_env)) {
-      sid <- Sys.getenv(paste0(db_name, "_SID"))
+      dbname <- Sys.getenv(paste0(db_name, "_DBNAME"))
+      host <- Sys.getenv(paste0(db_name, "_HOST"))
+      port <- Sys.getenv(paste0(db_name, "_PORT"))
+      user <- Sys.getenv(paste0(db_name, "_USER"))
+      password <- Sys.getenv(paste0(db_name, "_PASSWORD"))
+
     } else if (isFALSE(from_env)) {
-      sid <- settings$sid
+      stopifnot(is.list(settings),
+                length(settings) >= 4)
+      dbname <- settings$dbname
+      host <- settings$host
+      port <- settings$port
+      user <- settings$user
+      password <- settings$password
     }
 
-    ## create URL
-    url <- paste0("jdbc:oracle:thin:@//", host, ":", port, "/", sid)
+    if (db_type == "ORACLE") {
+      if (is.null(lib_path)) {
+        if (isTRUE(from_env)) {
+          lib_path <- Sys.getenv(paste0(db_name, "_DRIVER"))
+        } else {
+          lib_path <- settings$lib_path
+        }
+      }
 
-    ## create connection
-    db_con <- tryCatch({
-      conn <- DBI::dbConnect(
-        drv = drv,
-        url = url,
-        user = user,
-        password = password
+      stopifnot(lib_path != "" || !is.null(lib_path))
+
+      ## create driver
+      drv <- RJDBC::JDBC("oracle.jdbc.OracleDriver",
+                         classPath = lib_path)
+
+      if (isTRUE(from_env)) {
+        sid <- Sys.getenv(paste0(db_name, "_SID"))
+      } else if (isFALSE(from_env)) {
+        sid <- settings$sid
+      }
+
+      ## create URL
+      url <- paste0("jdbc:oracle:thin:@//", host, ":", port, "/", sid)
+
+      ## create connection
+      db_con <- tryCatch({
+        conn <- DBI::dbConnect(
+          drv = drv,
+          url = url,
+          user = user,
+          password = password
+        )
+        conn
+      }, error = function(e) {
+        conn <- NULL
+        conn
+      }, finally = function(f) {
+        return(conn)
+      })
+    } else if (db_type == "POSTGRES") {
+      drv <- RPostgres::Postgres()
+
+      db_con <- tryCatch({
+        conn <- RPostgres::dbConnect(
+          drv = drv,
+          dbname = dbname,
+          host = host,
+          port = port,
+          user = user,
+          password = password,
+          connect_timeout = timeout
+        )
+        conn
+      }, error = function(e) {
+        conn <- NULL
+        conn
+      }, finally = function(f) {
+        return(conn)
+      })
+    }
+    if (is.null(db_con)) {
+      feedback(
+        "DB connection error",
+        findme = "9431c8c61f",
+        logfile_dir = logfile_dir,
+        headless = headless,
+        type = "Error"
       )
-      conn
-    }, error = function(e) {
-      conn <- NULL
-      conn
-    }, finally = function(f) {
-      return(conn)
-    })
-
-  } else if (db_type == "POSTGRES") {
-    drv <- RPostgres::Postgres()
-
-    db_con <- tryCatch({
-      conn <- RPostgres::dbConnect(
-        drv = drv,
-        dbname = dbname,
-        host = host,
-        port = port,
-        user = user,
-        password = password,
-        connect_timeout = timeout
-      )
-      conn
-    }, error = function(e) {
-      conn <- NULL
-      conn
-    }, finally = function(f) {
-      return(conn)
-    })
-  }
-  if (is.null(db_con)) {
+    }
+  },
+  error = function(cond) {
     feedback(
-      "DB connection error",
-      findme = "9431c8c61f",
+      print_this = paste0("Error while trying to establish a db-connection: ",
+                          cond),
+      type = "Error",
       logfile_dir = logfile_dir,
-      headless = headless
+      headless = headless,
+      findme = "c16b60a6ff"
     )
-  }
+    return(NULL)
+  })
   return(db_con)
 }

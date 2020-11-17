@@ -1,7 +1,7 @@
 Package: DIZutils
 Title: Utilities for 'DIZ' R Package Development
-Version: 0.0.4
-Date: 2020-05-29
+Version: 0.0.6
+Date: 2020-11-17
 Authors@R: 
     c(person(given = "Jonathan M.",
              family = "Mang",
@@ -13,30 +13,34 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0003-1866-860X")),
       person(given = "MIRACUM - Medical Informatics in Research and Care in University Medicine",
-             role = "fnd"))
-Description: Utility functions used for R package development
-    infrastructure inside the data integration centers ('DIZ') to
-    standardize and facilitate repetitive tasks such as setting up a
+             role = "fnd"),
+      person(given = "Universitätsklinikum Erlangen",
+             role = "cph"))
+Description: Utility functions used for the R package
+    development infrastructure inside the data integration centers ('DIZ')
+    to standardize and facilitate repetitive tasks such as setting up a
     database connection or issuing notification messages and to avoid
     redundancy.
 License: GPL-3
-URL: https://gitlab.miracum.org/miracum/dqa/dizutils
-BugReports: https://gitlab.miracum.org/miracum/dqa/dizutils/issues
-Depends: R (>= 2.10)
-Imports: config, data.table, DBI, RJDBC, RPostgres, shiny, shinyjs
-Suggests: knitr, lintr, qpdf, rmarkdown, testthat
-biocViews:
-Copyright: Universitätsklinikum Erlangen
+URL: https://github.com/miracum/misc-dizutils
+BugReports: https://github.com/miracum/misc-dizutils/issues
+Depends: R (>= 3.1.0)
+Imports: config, data.table, DBI (>= 1.1.0), RJDBC, RPostgres, shiny,
+        shinyjs
+Suggests: lintr, testthat
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.1.0
+SystemRequirements: libpq >= 9.0: libpq-dev (deb) or postgresql-devel
+        (rpm)
+RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-05-29 10:21:48 UTC; user
+Packaged: 2020-11-17 12:51:58 UTC; user
 Author: Jonathan M. Mang [aut, cre] (<https://orcid.org/0000-0003-0518-4710>),
   Lorenz A. Kapsner [aut] (<https://orcid.org/0000-0003-1866-860X>),
   MIRACUM - Medical Informatics in Research and Care in University
-    Medicine [fnd]
+    Medicine [fnd],
+  Universitätsklinikum Erlangen [cph]
 Maintainer: Jonathan M. Mang <jonathan.mang@uk-erlangen.de>
 Repository: CRAN
-Date/Publication: 2020-06-03 16:30:12 UTC
+Date/Publication: 2020-11-17 13:10:04 UTC

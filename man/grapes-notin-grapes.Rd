@@ -18,9 +18,7 @@ Returns the result of !%in%(x,y)
 Function to return elements of x that are not in y.
 }
 \examples{
-\dontrun{
 tmp1 <- c("a","b","c")
 tmp2 <- c("b", "c", "d")
 tmp1 \%notin\% tmp2
-}
 }

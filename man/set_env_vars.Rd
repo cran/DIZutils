@@ -8,7 +8,7 @@ set_env_vars(env_file)
 }
 \arguments{
 \item{env_file}{A character. The full path including the file name to
-the file containing the environment variable defintions to be loaded.}
+the file containing the environment variable definitions to be loaded.}
 }
 \value{
 No return value, called for side effects (see description)
@@ -18,9 +18,7 @@ Internal function to set environment variables that are
   necessary for the database connections with \code{db_connection}.
 }
 \examples{
-\dontrun{
-set_env_vars("./.env")
-}
+\dontrun{set_env_vars("./.env")}
 
 }
 \seealso{

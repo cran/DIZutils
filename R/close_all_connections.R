@@ -5,9 +5,11 @@
 #' @inheritParams feedback
 #' @return No return value, called for side effects (see description)
 #' @examples
-#' \dontrun{
-#' close_all_connections("path/to/logfile/dir/", TRUE)
-#' }
+#' \donttest{
+#' close_all_connections(
+#'   logfile_dir = tempdir(),
+#'   headless = TRUE
+#' )}
 #' @export
 #'
 close_all_connections <- function(logfile_dir, headless) {
@@ -17,7 +19,7 @@ close_all_connections <- function(logfile_dir, headless) {
     logfile_dir = logfile_dir,
     headless = headless
   )
-  lapply(showConnections(), close)
+  closeAllConnections()
   feedback(
     "Closed all file-connections.",
     findme = "0c5cb72ecc",

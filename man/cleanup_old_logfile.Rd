@@ -20,8 +20,6 @@ This function is called once at the beginning of the
   Then a new, empty, logfile "logfile.log" is created.
 }
 \examples{
-\dontrun{
 cleanup_old_logfile("path/to/logfile/dir/")
-}
 
 }
