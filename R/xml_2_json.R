@@ -14,31 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @title global_env_hack
-#' @description Hack variable into global env (bypasses R CMD checks).
+#' @title Quickly transform a xml objet into a json object.
 #'
-#' @param key A character (!) string. The name of the assigned variable
-#' @param val An object. The object that will be assigned to 'key'.
-#' @param pos An integer. The position of the environment (default: 1).
+#' @description See title.
 #'
-#' @seealso \url{http://adv-r.had.co.nz/Environments.html}
-#' @return No return value, called for side effects (see description).
-#' @examples
-#' utils_path <- tempdir()
-#' global_env_hack(
-#'   key = "utils_path",
-#'   val = utils_path,
-#'   pos = 1L
-#' )
+#' @param xml An xml object.
+#' @return The json-representation of the xml object.
 #'
 #' @export
 #'
-global_env_hack <- function(key,
-                            val,
-                            pos = 1) {
-  assign(
-    key,
-    val,
-    envir = as.environment(pos)
-  )
+xml_2_json <- function(xml) {
+  return(RJSONIO::toJSON(xml2::as_list(xml)))
 }

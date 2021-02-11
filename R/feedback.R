@@ -1,3 +1,19 @@
+# DIZutils - Utilities for 'DIZ' R Package Development
+# Copyright (C) 2020-2021 Universitätsklinikum Erlangen
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #' @title Function to feedback messages either to the user and/or to the
 #'   console and to the logfile.
 #' @description This function provides the functionality to publish
@@ -9,7 +25,7 @@
 #'   One of these must be a string with length > 0: print_me, console, ui
 #' @param print_this (Optional, String, default: "")
 #' @param type (Optional, String, default: "Info")
-#'   E.g. "Warning", "Error. Default: "Info"
+#'   E.g. "Warning", "Error". Default: "Info"
 #' @param ui (Optional, Boolean/String, default: FALSE)
 #'   If true, the message will also be printed to the user in form of a modal.
 #'   Can also be a string.
@@ -42,9 +58,9 @@
 #' @return No return value, called for publishing a message.
 #' @examples
 #' feedback(
-#'   print_this = "Error occured when counting source_data",
+#'   print_this = "This is an error message you can provide",
 #'   type = "Error",
-#'   findme = "255bb3695c",
+#'   findme = "215bb3695c",
 #'   logfile_dir = tempdir(),
 #'   headless = TRUE
 #' )
@@ -73,7 +89,12 @@ feedback <-
     if (isTRUE(ui) ||
         (isFALSE(headless) &&
          isTRUE(type == "Error") && isFALSE(ui))) {
-      feedback_to_ui(print_this = print_this, type = type)
+      feedback_to_ui(
+        print_this = print_this,
+        type = type,
+        logfile_dir = logfile_dir,
+        headless = headless
+      )
     }
 
     if ((isTRUE(console) && isFALSE(print_this == "")) ||
@@ -85,7 +106,8 @@ feedback <-
         prefix = prefix,
         suffix = suffix,
         logjs = logjs,
-        logfile_dir = logfile_dir
+        logfile_dir = logfile_dir,
+        headless = headless
       )
     }
 
@@ -95,11 +117,16 @@ feedback <-
     # Hint: Everything printed to the console will also
     #       be printed to the logfile.
     if (isTRUE(typeof(ui) == "character")) {
-      feedback_to_ui(print_this = print_this, type = type)
+      feedback_to_ui(
+        print_this = print_this,
+        type = type,
+        logfile_dir = logfile_dir,
+        headless = headless
+      )
     }
   }
 
-#' @title Print to the console. Internal use.
+#' @title Print to the console. Internal use only.
 #' @description  Helper function for the feedback function to print
 #'   stuff to the console. Everything will also be added to the logfile.
 #'   Internal use. Use the robust 'feedback' function instead.
@@ -114,7 +141,8 @@ feedback_to_console <-
            prefix,
            suffix,
            logjs,
-           logfile_dir) {
+           logfile_dir,
+           headless = TRUE) {
     if (length(print_this) == 1) {
       res <-
         feedback_get_formatted_string(
@@ -128,7 +156,11 @@ feedback_to_console <-
       message(res)
       # To logjs:
       if (isTRUE(logjs)) {
-        feedback_to_logjs(res)
+        feedback_to_logjs(
+          print_this = res,
+          logfile_dir = logfile_dir,
+          headless = headless
+        )
       }
       # To logfile:
       feedback_to_logfile(
@@ -154,7 +186,11 @@ feedback_to_console <-
         message(res)
         # To logjs:
         if (isTRUE(logjs)) {
-          feedback_to_logjs(res)
+          feedback_to_logjs(
+            print_this = res,
+            logfile_dir = logfile_dir,
+            headless = headless
+          )
         }
         # To logfile:
         feedback_to_logfile(
@@ -178,7 +214,7 @@ feedback_to_console <-
 #' @return No return value, called for side effects (see description)
 #'
 feedback_to_ui <-
-  function(print_this, type, logfile_dir, headless) {
+  function(print_this, type, logfile_dir, headless = FALSE) {
     catch_msg <- paste0("Something went wrong while trying",
                         " to show feedback to the UI: ")
     tryCatch({
@@ -271,7 +307,21 @@ feedback_to_logfile <-
     # and a linebreak at the end:
     res <- paste0("[", Sys.time(), "] ", res, "\n")
 
-    logfile_dir <- repair_dir(logfile_dir)
+    logfile_dir <- DIZutils::clean_path_name(pathname = logfile_dir,
+                                             remove.slash = FALSE)
+
+    if (rapportools::is.empty(logfile_dir)) {
+      DIZutils::feedback(
+        print_this = paste0(
+          "'logfile_dir' was empty and automatically",
+          " switched to 'tempdir()' in the previous log-entry."
+        ),
+        type = "Warning",
+        findme = "215d74c51d"
+      )
+      logfile_dir <- tempdir()
+    }
+
     path_with_file <- paste0(logfile_dir, "logfile.log")
 
     # Open the connection to the logfile:
@@ -282,12 +332,6 @@ feedback_to_logfile <-
     close(log_con)
   }
 
-repair_dir <- function(dir) {
-  if (!grepl("\\/$", dir)) {
-    dir <- paste0(dir, "/")
-  }
-  return(dir)
-}
 
 #' @title Format the feedback string
 #' @description  Helper function for the feedback function to combine the input
@@ -330,7 +374,8 @@ feedback_get_formatted_string <-
 #' @export
 #'
 cleanup_old_logfile <- function(logfile_dir) {
-  logfile_dir <- repair_dir(logfile_dir)
+  logfile_dir <-
+    clean_path_name(pathname = logfile_dir, remove.slash = FALSE)
   path_with_file <- paste0(logfile_dir, "logfile.log")
   # Check if logfile.log is already the logfile for this session:
   if (isTRUE(file.exists(path_with_file))) {

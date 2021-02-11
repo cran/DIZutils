@@ -14,31 +14,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @title global_env_hack
-#' @description Hack variable into global env (bypasses R CMD checks).
+#' @title Quickly get all currently implemented database systems
 #'
-#' @param key A character (!) string. The name of the assigned variable
-#' @param val An object. The object that will be assigned to 'key'.
-#' @param pos An integer. The position of the environment (default: 1).
+#' @description Function to quickly get the currently implemented database
+#'   systems
 #'
-#' @seealso \url{http://adv-r.had.co.nz/Environments.html}
-#' @return No return value, called for side effects (see description).
+#' @return The currently implemented database systems as string array.
+#'   `E.g. c("postgres", "oracle")`
+#'#'
 #' @examples
-#' utils_path <- tempdir()
-#' global_env_hack(
-#'   key = "utils_path",
-#'   val = utils_path,
-#'   pos = 1L
-#' )
+#' get_db_systems()
+#' # Result: c("postgres", "oracle")
 #'
 #' @export
 #'
-global_env_hack <- function(key,
-                            val,
-                            pos = 1) {
-  assign(
-    key,
-    val,
-    envir = as.environment(pos)
-  )
+get_db_systems <- function() {
+  return(c("postgres", "oracle"))
 }

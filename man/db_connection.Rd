@@ -21,17 +21,18 @@ db_connection(
 \item{db_type}{A character. Type of the database system. Currently
 implemented systems are: 'postgres', 'oracle'.}
 
-\item{headless}{A boolean (default: FALSE). Indicating, if the function is
-run only in the console (headless = TRUE) or on a GUI frontend
-(headless = FALSE).}
+\item{headless}{A boolean (default: `FALSE`). Indicating, if the function is
+run only in the console (`headless = TRUE`) or on a GUI frontend
+(`headless = FALSE`).}
 
-\item{from_env}{A boolean (default: TRUE). Should database connection
+\item{from_env}{A boolean (default: `TRUE`). Should database connection
 be read from the environment or from a settings file.}
 
-\item{settings}{A list. Required if `from_env=TRUE`. A list containing
-settings for the database connection. Required fields are 'host',
-'db_name', 'port', 'user' and 'password'.
-Additionally for Oracle DB's: 'sid'.}
+\item{settings}{A list. Required if `from_env = TRUE`. A list containing
+settings for the database connection. Required fields are `host`,
+`db_name`, `port`, `user` and `password`.
+Additionally for Oracle DB's: `sid` (instead of `db_name`).
+If `settings` is set, `from_env` will be set to `FALSE` automatically.}
 
 \item{timeout}{A timeout in sec. for the db-connection establishment.
 Values below 2 seconds are not recommended.
@@ -40,7 +41,11 @@ Default is 30 seconds.}
 \item{logfile_dir}{(Optional, String, default: "tempdir()")
 The absolute path to folder where the logfile will be stored.}
 
-\item{lib_path}{A character string. The path to the ojdbc*.jar file.}
+\item{lib_path}{A character string. The path to the ojdbc*.jar file.
+If you run one of the R-containers from the UK-Erlangen DIZ, there
+might be a lib for oracle here: `lib_path = "/opt/libs/ojdbc8.jar"`
+Example-Dockerfile:
+https://github.com/joundso/docker_images/blob/241814e13d99511143d90f6e2217c32ad0477256/image_rdsc_headless_j/Dockerfile#L376}
 }
 \value{
 If successful, the result will be the established connection.
