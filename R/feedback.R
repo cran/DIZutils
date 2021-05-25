@@ -1,5 +1,5 @@
 # DIZutils - Utilities for 'DIZ' R Package Development
-# Copyright (C) 2020-2021 Universitätsklinikum Erlangen
+# Copyright (C) 2020-2021 Universitätsklinikum Erlangen, Germany
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -216,7 +216,8 @@ feedback_to_console <-
 feedback_to_ui <-
   function(print_this, type, logfile_dir, headless = FALSE) {
     catch_msg <- paste0("Something went wrong while trying",
-                        " to show feedback to the UI: ")
+                        " to show feedback to the UI.",
+                        " Are you sure the GUI is running? ")
     tryCatch({
       if (isTRUE(type == "Error")) {
         title <- "Sorry, an error has occured"

@@ -1,5 +1,5 @@
 # DIZutils - Utilities for 'DIZ' R Package Development
-# Copyright (C) 2020-2021 Universitätsklinikum Erlangen
+# Copyright (C) 2020-2021 Universitätsklinikum Erlangen, Germany
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@
 #'   run only in the console (`headless = TRUE`) or on a GUI frontend
 #'   (`headless = FALSE`).
 #' @param from_env A boolean (default: `TRUE`). Should database connection
-#'   be read from the environment or from a settings file.
-#' @param settings A list. Required if `from_env = TRUE`. A list containing
+#'   be read from the environment or from a settings file. All necessary
+#'   parameters must be uppercase and have the prefix of the db_name. E.g.:
+#'   `I2B2_HOST` or `I2B2_PORT`. See the `settings` parameter for all
+#'   necessary variables.
+#' @param settings A list. Required if `from_env == FALSE`. A list containing
 #'   settings for the database connection. Required fields are `host`,
 #'   `db_name`, `port`, `user` and `password`.
 #'   Additionally for Oracle DB's: `sid` (instead of `db_name`).
@@ -32,14 +35,19 @@
 #' @param timeout A timeout in sec. for the db-connection establishment.
 #'   Values below 2 seconds are not recommended.
 #'   Default is 30 seconds.
-#' @param db_name A character. Name of the database system.
+#' @param system_name (Default = NULL) A character. Name of the database system.
+#'   Used to find the correct settings from the env. If you don't want to
+#'   load the settings from the environment, use the `settings` parameter.
+#'   Otherwise this funcion will search for all settings beginning with
+#'   `system_name` in the environment. If `system_name = "i2b2"` settings like
+#'   `I2B2_HOST` or `I2B2_PORT` (notice the uppercase) will be loaded from
+#'   the environment. You can load such an env file e.g. by using
+#'   `DIZutils::set_env_vars(path_to_file)`.
 #' @param db_type A character. Type of the database system. Currently
 #'   implemented systems are: 'postgres', 'oracle'.
 #' @param lib_path A character string. The path to the ojdbc*.jar file.
 #'   If you run one of the R-containers from the UK-Erlangen DIZ, there
 #'   might be a lib for oracle here: `lib_path = "/opt/libs/ojdbc8.jar"`
-#'   Example-Dockerfile:
-#'   https://github.com/joundso/docker_images/blob/241814e13d99511143d90f6e2217c32ad0477256/image_rdsc_headless_j/Dockerfile#L376
 #'
 #' @inheritParams feedback
 #' @return If successful, the result will be the established connection.
@@ -59,7 +67,7 @@
 #'
 #' @export
 #'
-db_connection <- function(db_name,
+db_connection <- function(system_name = NULL,
                           db_type,
                           headless = FALSE,
                           from_env = TRUE,
@@ -70,7 +78,7 @@ db_connection <- function(db_name,
   db_con <- NULL
 
   stopifnot(
-    is.character(db_name),
+    # is.character(system_name),
     is.character(db_type),
     is.logical(headless),
     is.logical(from_env),
@@ -83,21 +91,19 @@ db_connection <- function(db_name,
   error <- FALSE
 
   tryCatch({
-    db_type <- toupper(db_type)
-    db_name <- toupper(db_name)
-
     ## If there are settings provided, use these and switch off `from_env`:
     if (isTRUE(!is.null(settings) && is.list(settings))) {
       from_env <- FALSE
     }
 
     if (isTRUE(from_env)) {
-      dbname <- Sys.getenv(paste0(db_name, "_DBNAME"))
-      host <- Sys.getenv(paste0(db_name, "_HOST"))
-      port <- Sys.getenv(paste0(db_name, "_PORT"))
-      user <- Sys.getenv(paste0(db_name, "_USER"))
-      password <- Sys.getenv(paste0(db_name, "_PASSWORD"))
-
+      stopifnot(is.character(system_name))
+      system_name_uppercase <- toupper(system_name)
+      dbname <- Sys.getenv(paste0(system_name_uppercase, "_DBNAME"))
+      host <- Sys.getenv(paste0(system_name_uppercase, "_HOST"))
+      port <- Sys.getenv(paste0(system_name_uppercase, "_PORT"))
+      user <- Sys.getenv(paste0(system_name_uppercase, "_USER"))
+      password <- Sys.getenv(paste0(system_name_uppercase, "_PASSWORD"))
     } else if (isFALSE(from_env)) {
       stopifnot(is.list(settings),
                 length(settings) >= 4)
@@ -108,21 +114,20 @@ db_connection <- function(db_name,
       password <- settings$password
     }
 
+    db_type <- toupper(db_type)
 
-    necessary_vars <-
-      list(
-        "db_name" = db_name,
-        "host" = host,
-        "port" = port,
-        "user" = user,
-        "password" = password
-      )
+    necessary_vars <- c("host", "port", "user", "password")
+    if (db_type != "ORACLE") {
+      ## For oracle we don't need a 'dbname' but a SID, which
+      ## will be checked later.
+      necessary_vars <- c(necessary_vars, "dbname")
+    }
 
     ## Check if all necessary parameters are filled:
-    for (param in names(necessary_vars)) {
-      if (necessary_vars[[param]] == "" ||
-          is.null(necessary_vars[[param]])) {
-        DIZutils::feedback(
+    for (param in necessary_vars) {
+      if (!exists(param) ||
+          get(param) == "" || is.null(get(param))) {
+        feedback(
           print_this = paste0("Missing '", param, "' for db-connection."),
           type = "Error",
           findme = "f762a865c8",
@@ -137,7 +142,7 @@ db_connection <- function(db_name,
     if (!error && db_type == "ORACLE") {
       if (is.null(lib_path)) {
         if (isTRUE(from_env)) {
-          lib_path <- Sys.getenv(paste0(db_name, "_DRIVER"))
+          lib_path <- Sys.getenv(paste0(system_name_uppercase, "_DRIVER"))
         } else {
           lib_path <- settings$lib_path
         }
@@ -150,14 +155,14 @@ db_connection <- function(db_name,
                          classPath = lib_path)
 
       if (isTRUE(from_env)) {
-        sid <- Sys.getenv(paste0(db_name, "_SID"))
+        sid <- Sys.getenv(paste0(system_name_uppercase, "_SID"))
       } else if (isFALSE(from_env)) {
         sid <- settings$sid
       }
 
       if (is.null(sid) || sid == "") {
         ## SID is missing, so check if we can use the db_name instead:
-        if (is.null(db_name) || db_name == "") {
+        if (is.null(dbname) || dbname == "") {
           feedback(
             print_this = "Missing SID for db-connection to oracle.",
             type = "Error",
@@ -170,8 +175,8 @@ db_connection <- function(db_name,
         } else {
           feedback(
             print_this = paste0(
-              "`SID` is empty. Using the `db_name` ('",
-              db_name,
+              "`SID` is empty. Using the `dbname` ('",
+              dbname,
               "') instead. But this might be wrong or cause errors!"
             ),
             type = "Warning",
@@ -179,7 +184,7 @@ db_connection <- function(db_name,
             headless = headless,
             findme = "e38041e91c"
           )
-          sid <- db_name
+          sid <- dbname
         }
       }
 
@@ -197,7 +202,7 @@ db_connection <- function(db_name,
         )
         conn
       }, error = function(e) {
-        DIZutils::feedback(
+        feedback(
           print_this = paste0("Error while connection to oracle: ", e),
           type = "Error",
           logfile_dir = logfile_dir,
@@ -225,7 +230,7 @@ db_connection <- function(db_name,
         )
         conn
       }, error = function(e) {
-        DIZutils::feedback(
+        feedback(
           print_this = paste0("Error while connection to postgres: ", e),
           type = "Error",
           logfile_dir = logfile_dir,
