@@ -1,7 +1,7 @@
 Package: DIZutils
 Title: Utilities for 'DIZ' R Package Development
-Version: 0.0.9
-Date: 2021-12-08
+Version: 0.0.10
+Date: 2022-01-24
 Authors@R: c(
     person("Jonathan M.", "Mang", , "jonathan.mang@uk-erlangen.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0518-4710")),
@@ -27,7 +27,7 @@ Language: en-US
 SystemRequirements: libpq >= 9.0: libpq-dev (deb) or postgresql-devel
         (rpm)
 NeedsCompilation: no
-Packaged: 2021-12-08 09:32:40 UTC; user
+Packaged: 2022-01-24 12:57:05 UTC; user
 Author: Jonathan M. Mang [aut, cre] (<https://orcid.org/0000-0003-0518-4710>),
   Lorenz A. Kapsner [aut] (<https://orcid.org/0000-0003-1866-860X>),
   MIRACUM - Medical Informatics in Research and Care in University
@@ -35,4 +35,4 @@ Author: Jonathan M. Mang [aut, cre] (<https://orcid.org/0000-0003-0518-4710>),
   Universitätsklinikum Erlangen, Germany [cph]
 Maintainer: Jonathan M. Mang <jonathan.mang@uk-erlangen.de>
 Repository: CRAN
-Date/Publication: 2021-12-08 09:50:02 UTC
+Date/Publication: 2022-01-24 13:22:42 UTC
