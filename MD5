@@ -1,15 +1,14 @@
-d72655691215a61f46daf8ca1745ce6e *DESCRIPTION
-9a4c4bbc261976ae424d8e266fab9a4e *NAMESPACE
-a99381b17eec2a36ad8d9f5726016777 *NEWS.md
+9479b89a675cad3fefae546d5d9c586b *DESCRIPTION
+6e4628ec7c5efef3be2ee42c9b40e0ad *NAMESPACE
 370f0d7b02596870a7b6bf7ad93eccbf *R/check_if_table_exists.R
 353b546919fc1b2434deaa80b9940fd9 *R/clean_path_name.R
 35264443cdfe30562e2b29a8114f617e *R/clear.R
 fa1c8e228b295fdcc9d174bade178b7b *R/close_all_connections.R
-836ae80d05807a3c69fe91febd4e863d *R/close_connection.R
+f85bfaa591d9b2178de9735740be14f6 *R/close_connection.R
 30df79201e0b29faf21fe54dd331e9db *R/combine_stats.R
 7db7bdcb76a5583d910acc4a7d235739 *R/db_connection.R
 9262125f4b434cbf3f1ea71584a6aa7b *R/equals2.R
-f3190df22ab3f6842cf5037a57345dc1 *R/feedback.R
+d0bd64eaedd82a8479fdef22aeea0f2b *R/feedback.R
 c4ca8e3c8a890b9e7ccb852bafa391cb *R/firstup.R
 0b35e56a5a3d0ac00b740b69849c87a7 *R/format_POSIXct.R
 bc74748e5596763a0f46ff7920414485 *R/get_config.R
@@ -19,8 +18,8 @@ bc74748e5596763a0f46ff7920414485 *R/get_config.R
 772ee9115a6e120509a1bd1358522351 *R/global_env_hack.R
 9c1df3f0f5c92421ba1bf3fa526020b1 *R/is_date_format.R
 41745fdc90bf274b0b6e015a72c1c0a0 *R/notin.R
-f6f000226e03364ec4b4af70c82fd75d *R/query_database.R
-6646ed0d1cf2286329e1a27937609b85 *R/rep2.R
+63ba307581bbe0cfe5bdf44b43a67a43 *R/query_database.R
+8e57c5455e07af32940ff33f4dd38a64 *R/rep2.R
 d2f887d602d0cd44c7e6413f1f18b2fc *R/set_env_vars.R
 47f8de15fc44ccaeec425446512a3948 *R/setdiff_all.R
 26348b06e0532dc74c02c9f4f12a3ff6 *R/setenv2.R
@@ -32,7 +31,7 @@ e12dfe4261c127821c0eb50c5925c610 *man/clean_path_name.Rd
 13aeaf656a294e94bde0d9ca94c5e26b *man/cleanup_old_logfile.Rd
 be204b413c495416e1558b1b0815744c *man/clear.Rd
 2864092fcc99f1cb0ce8a4c236557c07 *man/close_all_connections.Rd
-83624ec78260ce29bb0d3e7783c7d534 *man/close_connection.Rd
+81047add1277b60d33d0956cbcdbddb0 *man/close_connection.Rd
 23bc9eb2dfaabefa352a38697577d5c3 *man/combine_stats.Rd
 1df1803717473e6e331dc5d6b079068e *man/db_connection.Rd
 adc617a56db147d9c554853c034fc0c1 *man/equals2.Rd
@@ -59,4 +58,5 @@ f5bce4a7f49f5e65e33e3888dc97671a *man/rep2.Rd
 f7f43dade6e2ef6086ec5eb1b2070a31 *man/string_replacements.Rd
 e79ddaf2ef6360ac14c89315ee162775 *man/xml_2_json.Rd
 56c5a176463e1b535359fdfba7cb3347 *tests/testthat.R
-9aca42e5aaa3a582b7916c7466676025 *tests/testthat/test-lints.R
+d2f2bcfb68ba6e1d8845a928e4e9fac8 *tests/testthat/test-feedback.R
+56c91d538956f1c92eea809ed1e7b1ae *tests/testthat/test-lints.R
