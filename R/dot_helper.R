@@ -14,30 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @title get_config helper function
+#' Dot Helper
 #'
-#' @description Internal function to read config files
+#' https://github.com/tidyverse/magrittr/issues/29
 #'
-#' @inheritParams DIZtools::get_config
-#'
-#' @return If successful it returns the config, Null otherwise.
-#' @examples
-#' \donttest{
-#' utils_path <- tempdir()
-#' config <- get_config(
-#'   config_file = paste0(utils_path, "/MISC/email.yml"),
-#'   config_key = "email"
-#' )}
-#'
-#' @export
-#'
-get_config <-
-  function(config_file,
-           config_key) {
-    # keep function since it is used in DQAgui
-    DIZtools::get_config(
-      config_file = config_file,
-      config_key = config_key
-    ) %>%
-      return()
-  }
+#' @name dot_helper
+#' @keywords internal
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c("."))
+}

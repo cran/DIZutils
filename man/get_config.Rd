@@ -4,7 +4,7 @@
 \alias{get_config}
 \title{get_config helper function}
 \usage{
-get_config(config_file, config_key, logfile_dir, headless)
+get_config(config_file, config_key)
 }
 \arguments{
 \item{config_file}{A character string. The path to the config.yml-file
@@ -13,13 +13,6 @@ containing the database configuration.}
 \item{config_key}{A character string. The name of the corresponding
 database. This string must be conform with the corresponding config
 section in the config.yml-file.}
-
-\item{logfile_dir}{(Optional, String, default: "tempdir()")
-The absolute path to folder where the logfile will be stored.}
-
-\item{headless}{(Optional, Boolean, default: TRUE)
-Indicating, if the function is run only in the console (headless = TRUE)
-or on a GUI frontend (headless = FALSE).}
 }
 \value{
 If successful it returns the config, Null otherwise.
@@ -32,9 +25,7 @@ Internal function to read config files
 utils_path <- tempdir()
 config <- get_config(
   config_file = paste0(utils_path, "/MISC/email.yml"),
-  config_key = "email",
-  logfile_dir = tempdir(),
-  headless = TRUE
+  config_key = "email"
 )}
 
 }

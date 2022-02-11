@@ -22,25 +22,24 @@
 #'   `DIZutils::setenv2(key = var.name, val = var.value)` will create
 #'   `testname = 7` in the system environment.
 #'
-#' @param key A character (!) string. The name of the assigned variable
-#' @param val An object. The object that will be assigned to 'key'.
+#' @inheritParams DIZtools::setenv2
 #'
 #' @return No return value, called for side effects (see description).
 #' @seealso \url{https://stackoverflow.com/a/12533155}
 #' @examples
 #'   var.name = "testname"
 #'   var.value = 7
-#'   
+#'
 #'   Sys.setenv(var.name = var.value)
-#'   
+#'
 #'   Sys.getenv("testname")
 #'   #> [1] ""
 #'   Sys.getenv("var.name")
 #'   #> [1] "7"
-#'   
+#'
 #'   Sys.unsetenv("var.name")
 #'   Sys.unsetenv("testname")
-#'   
+#'
 #'   DIZutils::setenv2(key = var.name, val = var.value)
 #'   Sys.getenv("testname")
 #'   #> [1] "7"
@@ -50,7 +49,6 @@
 #' @export
 #'
 setenv2 <- function(key, val) {
-  args = list(val)
-  names(args) = key
-  do.call(Sys.setenv, args)
+  # function is required by DQAstats, DQAgui, miRacumDQA
+  DIZtools::setenv2(key = key, val = val)
 }
