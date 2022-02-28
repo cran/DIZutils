@@ -1,7 +1,7 @@
 Package: DIZutils
 Title: Utilities for 'DIZ' R Package Development
-Version: 0.0.14
-Date: 2022-02-21
+Version: 0.0.15
+Date: 2022-02-26
 Authors@R: c(
     person("Jonathan M.", "Mang", , "jonathan.mang@uk-erlangen.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0518-4710")),
@@ -19,8 +19,8 @@ License: GPL-3
 URL: https://github.com/miracum/misc-dizutils
 BugReports: https://github.com/miracum/misc-dizutils/issues
 Depends: R (>= 3.1.0)
-Imports: data.table, DBI (>= 1.1.0), DIZtools, Hmisc, magrittr, psych,
-        RJDBC, RJSONIO, RPostgres, xml2
+Imports: data.table, DBI (>= 1.1.0), DIZtools, Hmisc, psych, RJDBC,
+        RJSONIO, RPostgres, xml2
 Suggests: lintr, testthat
 Encoding: UTF-8
 Language: en-US
@@ -28,7 +28,7 @@ SystemRequirements: libpq >= 9.0: libpq-dev (deb) or postgresql-devel
         (rpm)
 RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2022-02-21 09:46:39 UTC; user
+Packaged: 2022-02-26 14:34:18 UTC; user
 Author: Jonathan M. Mang [aut, cre] (<https://orcid.org/0000-0003-0518-4710>),
   Lorenz A. Kapsner [aut] (<https://orcid.org/0000-0003-1866-860X>),
   MIRACUM - Medical Informatics in Research and Care in University
@@ -36,4 +36,4 @@ Author: Jonathan M. Mang [aut, cre] (<https://orcid.org/0000-0003-0518-4710>),
   Universitätsklinikum Erlangen, Germany [cph]
 Maintainer: Jonathan M. Mang <jonathan.mang@uk-erlangen.de>
 Repository: CRAN
-Date/Publication: 2022-02-21 17:00:02 UTC
+Date/Publication: 2022-02-28 07:40:02 UTC
