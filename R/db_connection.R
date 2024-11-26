@@ -290,6 +290,32 @@ db_connection <- function(system_name = NULL,
         conn <- NULL
         return(conn)
       })
+    }else if (!error && db_type == "TRINO") {
+      drv <- RPresto::Presto()
+
+      db_con <- tryCatch({
+        # arguments from https://rdrr.io/github/prestodb/RPresto/man/Presto.html
+
+        httr::set_config(httr::config(
+         ssl_verifypeer = 0L,
+         userpwd = paste(settings$user, settings$password, sep = ":")
+        ))
+
+        if (DIZtools::is.empty(settings$schema)) {
+          settings$schema <- "default"
+        }
+
+        conn <- DBI::dbConnect(
+          drv = RPresto::Presto(),
+          host = settings$host,
+          port = settings$port,
+          user = settings$user,
+          password = settings$password,
+          catalog = "memory",
+          schema = settings$schema
+        )
+      })
+      conn
     }
     if (error || is.null(db_con)) {
       DIZtools::feedback(

@@ -1,14 +1,14 @@
-2e15c7ee6fc10a21bd77595ff31a9405 *DESCRIPTION
+fbe3f4ebf1454e0bada96616859eeaba *DESCRIPTION
 1c5ec98eac7c5033609b6f1023ce1377 *NAMESPACE
 370f0d7b02596870a7b6bf7ad93eccbf *R/check_if_table_exists.R
 f85bfaa591d9b2178de9735740be14f6 *R/close_connection.R
 30df79201e0b29faf21fe54dd331e9db *R/combine_stats.R
-037499fc3cb13e7d493757adc2332a00 *R/db_connection.R
+e0d8426a69abe97687f60835df91f383 *R/db_connection.R
 89ea123be0f459c0b2798c38e77a66c1 *R/get_config_env.R
 7b901c22c9ffbdd2e0675e0288108b5c *R/get_db_systems.R
 443c7e78762dc9fd4e0bec61967e7ce9 *R/query_database.R
 cda8943c29743782ce85916ea7160784 *R/xml_2_json.R
-078454cedefe9452ca7501167a3af2ac *README.md
+e8b8855531857e7e36f7c23b00b74a8f *README.md
 4b5763564b58f0466dc7884f4886224b *man/check_if_table_exists.Rd
 81047add1277b60d33d0956cbcdbddb0 *man/close_connection.Rd
 23bc9eb2dfaabefa352a38697577d5c3 *man/combine_stats.Rd
